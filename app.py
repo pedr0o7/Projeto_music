@@ -89,7 +89,7 @@ def get_musicas():
 
 @app.route('/index')
 def index():
-    return get_musicas()
+    return render_template('index.html')
 
     #return render_template('index.html')
 
