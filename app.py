@@ -48,7 +48,7 @@ def download_video(link, link_img, nome, nome_artista, nome_musica):
 
 def get_musicas():
         musicas = []
-        youTubeApiKey='AIzaSyCH8bkP6xRQDn0f24XkAwbZtW8FOMXp8Lw'
+        youTubeApiKey='COLOQUE SUA API'
 
         youtube=build('youtube','v3',developerKey=youTubeApiKey)
 
