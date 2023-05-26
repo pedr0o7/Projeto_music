@@ -8,7 +8,17 @@ import urllib.request
 from googleapiclient.discovery import build
 from datetime import datetime
 
-app = Flask(__name__,template_folder='Template')
+app = Flask(__name__)
+
+@app.route('/dados', methods=['GET'])
+def obter_dados():
+    dados = {
+        'nome': 'João',
+        'idade': 30,
+        'cidade': 'Exemploville'
+    }
+    return jsonify(dados)
+
 
 @app.route('/index')
 def ini():
@@ -22,19 +32,28 @@ def download_video(link, link_img, nome, nome_artista, nome_musica):
         except:
             erro = sys.exc_info()
             print("Ocorreu um erro:", erro)
-        path = '\Projeto_music\musicas'
+        path = '.\static\musicas'
 
         yt = YouTube(link)
         # Fazer o download
         ys = yt.streams.filter(only_audio=True).first().download(path)
+        
         # Converter o video(mp4) para mp3
         for file in os.listdir(path):
+            
             if re.search('mp4', file):
+               
                 mp4_path = os.path.join(path, file)
+               
                 mp3_path = os.path.join(path, os.path.splitext(file)[0] + '.mp3')
+              
                 new_file = mp.AudioFileClip(mp4_path)
+          
                 new_file.write_audiofile(mp3_path)
+                     
                 os.remove(mp4_path)
+              
+        
         print("Download Completo")
 
         lista = {}
@@ -45,17 +64,17 @@ def download_video(link, link_img, nome, nome_artista, nome_musica):
 
         return lista
 
-
+@app.route('/music', methods=['GET'])
 def get_musicas():
-        musicas = []
-        youTubeApiKey='COLOQUE SUA API'
+        music = []
+        youTubeApiKey='AIzaSyCH8bkP6xRQDn0f24XkAwbZtW8FOMXp8Lw'
 
         youtube=build('youtube','v3',developerKey=youTubeApiKey)
 
         #extraindo musicas de uma playlist
         #https://music.youtube.com/playlist?list=LpWNlrG9ev8
-        playlistId= 'PLxyqXg5XfqVYt9npPl4do2UkPSB6k6fX1'
-        playlistName = 'Boiadera'
+        playlistId= 'RDCLAK5uy_lW5Ba7hNPuQjGabDvy4cUZgj-FeONdfsM'
+        #playlistName = 'Boiadera'
         nextPage_token = None
 
         playliste_musicas=[]
@@ -89,7 +108,7 @@ def get_musicas():
             extraction_date = [str(datetime.now())]*len(musicas_ids)
 
         #for i in range(len(playliste_musicas)):
-        for i in range(1):
+        for i in range(3):
             #print (stats)
             #for i in len(videoid):
             #print('https://music.youtube.com/watch?v='+videoid[i]+'&&list='+playlistId)
@@ -98,23 +117,23 @@ def get_musicas():
             #print(titulo[i])
             nome_artista = artista[i].translate(str.maketrans('', '', ' - Topic'))
             #print(nome_artista)
-            caminho_img = '\Projeto_music\imagens/'+ videos_title[i]+'.jpg'
+            caminho_img = '.\static\imagens\\'+ videos_title[i]+'.jpg'
             img = url_thumbnails[i]
             
             playlistlink = 'https://music.youtube.com/watch?v='+videoid[i]+'&&list='+playlistId
             musica_info=download_video(playlistlink,img,caminho_img,nome_artista,titulo[i])
             print(img,'-',caminho_img)
-            musicas.append(musica_info)
-        print(musicas)
-        return 0
+            music.append(musica_info)
+        #print(music)
+        return jsonify(music)
 
 
 @app.route('/')
 def index():
-    get_musicas()
-    return render_template('index.html')
+    #print(get_musicas())
+    #response = get_musicas()
+    return render_template('teste.html')
 
-    #return render_template('index.html')
 
-
-app.run()
+if __name__ == '__main__':
+    app.run()

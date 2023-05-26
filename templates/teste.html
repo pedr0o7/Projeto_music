@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<!--
+<head>
+    <title>Exemplo</title>
+</head>
+
+<body>
+
+    <h1>Musica</h1>
+    <p>titulo: <span id="titulo"></span></p>
+    <p>artista: <span id="artista"></span></p>
+    <p>src: <span id="link"></span></p>
+    <p>img: <span id="link_img"></span></p>
+    <button onclick=""> teste</button>
+
+</body>-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Projeto Player Spotify</title>
+</head>
+
+<body>
+
+    <br>
+    <img src="/static/imagens/Boiadeira.jpg">
+    <div class="descricao">
+        <h2>BOIADEIRA</h2>
+        <i>ANA CASTELO</i>
+    </div>
+    <div class="duracao">
+        <div class="barra">
+            <progress value="0" max="1"></progress>
+            <div class="ponto"></div>
+        </div>
+        <div class="tempo">
+            <p class="inicio">0:00</p>
+            <p class="fim">2:49</p>
+        </div>
+    </div>
+    <div class="player">
+        <i class="fas fa-step-backward setas anterior"></i>
+        <i class="fas fa-play-circle botao-play"></i>
+        <i class="fas fa-pause-circle botao-pause"></i>
+        <i class="fas fa-step-forward setas proxima"></i>
+    </div>
+    <audio src="/static/musicas/Boiadeira.mp3"></audio>
+    <script src="/static/js/dados.js"></script>
+</body>
+
+<!--<script>
+
+    fetch('/music')
+        .then(result => {
+            // Manipule os dados JSON recebidos aqui
+            // Por exemplo, exiba os valores em algum elemento HTML
+            return result.json();
+        })
+        .then(data => {
+            const dados = data[0];
+            console.log(dados);
+            document.getElementById('titulo').textContent = dados.titulo;
+            document.getElementById('artista').textContent = dados.artista;
+            document.getElementById('link').textContent = dados.src;
+            document.getElementById('link_img').textContent = dados.img;
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+
+    let musica = document.querySelector('audio');
+    let indexMusica = 0;
+
+    let duracaoMusica = document.querySelector('.fim');
+    let imagem = document.querySelector('img');
+    let nomeMusica = document.querySelector('.descricao h2');
+    let nomeArtista = document.querySelector('.descricao i');
+
+    renderizarMusica(indexMusica);
+
+    // Eventos
+    document.querySelector('.botao-play').addEventListener('click', tocarMusica);
+
+    document.querySelector('.botao-pause').addEventListener('click', pausarMusica);
+
+    musica.addEventListener('timeupdate', atualizarBarra);
+
+    document.querySelector('.anterior').addEventListener('click', () => {
+        indexMusica--;
+        if (indexMusica < 0) {
+            indexMusica = 2;
+        }
+        renderizarMusica(indexMusica);
+    });
+
+    document.querySelector('.proxima').addEventListener('click', () => {
+        indexMusica++;
+        if (indexMusica > 25) {
+            indexMusica = 0;
+        }
+        renderizarMusica(indexMusica);
+    });
+
+    // Funções
+    function renderizarMusica(index) {
+        musica.setAttribute('src', data[index].src);
+        musica.addEventListener('loadeddata', () => {
+            nomeMusica.textContent = data[index].titulo;
+            nomeArtista.textContent = data[index].artista;
+            imagem.src = data[index].img;
+            duracaoMusica.textContent = segundosParaMinutos(Math.floor(musica.duration));
+        });
+    }
+
+    function tocarMusica() {
+        musica.play();
+        document.querySelector('.botao-pause').style.display = 'block';
+        document.querySelector('.botao-play').style.display = 'none';
+    }
+
+    function pausarMusica() {
+        musica.pause();
+        document.querySelector('.botao-pause').style.display = 'none';
+        document.querySelector('.botao-play').style.display = 'block';
+    }
+
+    function atualizarBarra() {
+        let barra = document.querySelector('progress');
+        barra.style.width = Math.floor((musica.currentTime / musica.duration) * 100) + '%';
+        let tempoDecorrido = document.querySelector('.inicio');
+        tempoDecorrido.textContent = segundosParaMinutos(Math.floor(musica.currentTime));
+    }
+
+    function segundosParaMinutos(segundos) {
+        let campoMinutos = Math.floor(segundos / 60);
+        let campoSegundos = segundos % 60;
+        if (campoSegundos < 10) {
+            campoSegundos = '0' + campoSegundos;
+        }
+
+        return campoMinutos + ':' + campoSegundos;
+    }
+
+
+</script>-->
+
+</html>
