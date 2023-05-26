@@ -1,4 +1,4 @@
-@set "VIRTUAL_ENV=C:\Users\pedro.ferreira\Downloads\Projetos-Javascript-main\Projetos-Javascript-main\projeto_music"
+@set "VIRTUAL_ENV=C:\Users\pedro.ferreira\Desktop\projetin"
 
 @if defined _OLD_VIRTUAL_PROMPT (
     @set "PROMPT=%_OLD_VIRTUAL_PROMPT%"

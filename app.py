@@ -8,9 +8,19 @@ import urllib.request
 from googleapiclient.discovery import build
 from datetime import datetime
 
-app = Flask(__name__,template_folder='template')
+app = Flask(__name__)
 
-@app.route('/')
+@app.route('/dados', methods=['GET'])
+def obter_dados():
+    dados = {
+        'nome': 'João',
+        'idade': 30,
+        'cidade': 'Exemploville'
+    }
+    return jsonify(dados)
+
+
+@app.route('/index')
 def ini():
     return 'Ola mundo'
 
@@ -18,24 +28,33 @@ def download_video(link, link_img, nome, nome_artista, nome_musica):
     with app.app_context():
         try:
             urllib.request.urlretrieve(link_img, nome)
-            # print("Imagem salva! =)")
+            print("Imagem salva! =)")
         except:
             erro = sys.exc_info()
-            # print("Ocorreu um erro:", erro)
-        path = '\PROJETO_SPOTIFY_PARTE_2\musicas'
+            print("Ocorreu um erro:", erro)
+        path = '.\static\musicas'
 
         yt = YouTube(link)
         # Fazer o download
         ys = yt.streams.filter(only_audio=True).first().download(path)
+        
         # Converter o video(mp4) para mp3
         for file in os.listdir(path):
+            
             if re.search('mp4', file):
+               
                 mp4_path = os.path.join(path, file)
+               
                 mp3_path = os.path.join(path, os.path.splitext(file)[0] + '.mp3')
+              
                 new_file = mp.AudioFileClip(mp4_path)
+          
                 new_file.write_audiofile(mp3_path)
+                     
                 os.remove(mp4_path)
-        # print("Download Completo")
+              
+        
+        print("Download Completo")
 
         lista = {}
         lista['titulo'] = nome_musica
@@ -45,53 +64,76 @@ def download_video(link, link_img, nome, nome_artista, nome_musica):
 
         return lista
 
-
+@app.route('/music', methods=['GET'])
 def get_musicas():
-    musicas = []
-    youTubeApiKey = 'YOUR_YOUTUBE_API_KEY'
+        music = []
+        youTubeApiKey='AIzaSyCH8bkP6xRQDn0f24XkAwbZtW8FOMXp8Lw'
 
-    youtube = build('youtube', 'v3', developerKey=youTubeApiKey)
+        youtube=build('youtube','v3',developerKey=youTubeApiKey)
 
-    # Extraindo músicas de uma playlist
-    playlistId = 'YOUR_PLAYLIST_ID'
-    nextPage_token = None
+        #extraindo musicas de uma playlist
+        #https://music.youtube.com/playlist?list=LpWNlrG9ev8
+        playlistId= 'RDCLAK5uy_lW5Ba7hNPuQjGabDvy4cUZgj-FeONdfsM'
+        #playlistName = 'Boiadera'
+        nextPage_token = None
 
-    playlist_musicas = []
-    while True:
-        res = youtube.playlistItems().list(part='snippet', playlistId=playlistId, maxResults=50,
-                                           pageToken=nextPage_token).execute()
-        playlist_musicas += res['items']
-        nextPage_token = res.get('nextPageToken')
+        playliste_musicas=[]
+        while True :
+            res = youtube.playlistItems().list(part='snippet', playlistId = playlistId, maxResults=50, pageToken=nextPage_token).execute()
+            playliste_musicas += res['items']
+            nextPage_token = res.get('nestPageToken')
+            
+            if nextPage_token is None :
+                break
 
-        if nextPage_token is None:
-            break
+        #print('Numero total de musicas: ', len(playliste_musicas))
+        musicas_ids = list(map(lambda x: x['snippet']['resourceId']['videoId'], playliste_musicas))
+        #print(musicas_ids)
+        stats = []
 
-    for musica in playlist_musicas:
-        musica_id = musica['snippet']['resourceId']['videoId']
-        res = youtube.videos().list(part='statistics', id=musica_id).execute()
-        stats = res['items']
-        titulo = musica['snippet']['title']
-        artista = musica['snippet']['videoOwnerChannelTitle']
-        videos_title = musica['snippet']['title']
-        url_thumbnails = musica['snippet']['thumbnails']['high']['url']
-        published_date = str(musica['snippet']['publishedAt'])
-        video_description = musica['snippet']['description']
-        videoid = musica['snippet']['resourceId']['videoId']
+        for musica_id in musicas_ids:
+            res = youtube.videos().list(part='statistics', id=musica_id).execute()
+            stats += res['items']
+            #print('-'*1000)
+            #print(stats)
+            titulo = list(map(lambda x: x['snippet']['title'],playliste_musicas))
 
-        nome_artista = artista.translate(str.maketrans('', '', ' - Topic'))
-        caminho_img = '\PROJETO_SPOTIFY_PARTE_2\imagens/' + videos_title + '.jpg'
-        img = url_thumbnails
-        playlistlink = 'https://music.youtube.com/watch?v='+videoid+'&&list='+playlistId
-        musica_info = download_video(playlistlink, img, caminho_img, nome_artista, titulo)
-        musicas.append(musica_info)
-        return jsonify(musicas)
+            artista = list(map(lambda x: x['snippet']['videoOwnerChannelTitle'],playliste_musicas))
+            videos_title = list(map(lambda x: x['snippet']['title'], playliste_musicas))
+            url_thumbnails = list(map(lambda x: x['snippet']['thumbnails']['high']['url'], playliste_musicas))
+            published_date = list(map(lambda x: str(x['snippet']['publishedAt']), playliste_musicas)) #conversion from ISO8601 date format
+            video_description = list(map(lambda x: x['snippet']['description'], playliste_musicas))
+            videoid = list(map(lambda x: x['snippet']['resourceId']['videoId'], playliste_musicas))
+
+            extraction_date = [str(datetime.now())]*len(musicas_ids)
+
+        #for i in range(len(playliste_musicas)):
+        for i in range(3):
+            #print (stats)
+            #for i in len(videoid):
+            #print('https://music.youtube.com/watch?v='+videoid[i]+'&&list='+playlistId)
+            #print (videos_title) #NOMES
+            #print (url_thumbnails) #imagens das musicas
+            #print(titulo[i])
+            nome_artista = artista[i].translate(str.maketrans('', '', ' - Topic'))
+            #print(nome_artista)
+            caminho_img = '.\static\imagens\\'+ videos_title[i]+'.jpg'
+            img = url_thumbnails[i]
+            
+            playlistlink = 'https://music.youtube.com/watch?v='+videoid[i]+'&&list='+playlistId
+            musica_info=download_video(playlistlink,img,caminho_img,nome_artista,titulo[i])
+            print(img,'-',caminho_img)
+            music.append(musica_info)
+        #print(music)
+        return jsonify(music)
 
 
-@app.route('/index')
+@app.route('/')
 def index():
-    return render_template('index.html')
+    #print(get_musicas())
+    #response = get_musicas()
+    return render_template('teste.html')
 
-    #return render_template('index.html')
 
-
-app.run()
+if __name__ == '__main__':
+    app.run()
