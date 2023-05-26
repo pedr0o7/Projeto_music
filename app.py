@@ -67,7 +67,7 @@ def download_video(link, link_img, nome, nome_artista, nome_musica):
 @app.route('/music', methods=['GET'])
 def get_musicas():
         music = []
-        youTubeApiKey='AIzaSyCH8bkP6xRQDn0f24XkAwbZtW8FOMXp8Lw'
+        youTubeApiKey='SUA API KEY'
 
         youtube=build('youtube','v3',developerKey=youTubeApiKey)
 
