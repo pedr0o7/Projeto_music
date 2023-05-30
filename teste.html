@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .imagem {
+            margin-bottom: 20px;
+            width: 300px; /* Ajuste o valor conforme necessário */
+            height: auto;
+        }
+
+        .descricao {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .artista {
+            font-style: italic;
+        }
+
+        .player {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .botao {
+            font-size: 30px;
+            margin: 0 10px;
+        }
+
+        .pesquisa-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .pesquisa-form input[type="text"] {
+            padding: 5px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .pesquisa-form button[type="submit"] {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .pesquisa-form button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <title>Projeto Player Spotify</title>
+</head>
+
+<body>
+    <div class="pesquisa-form">
+        <form action="dados.js" method="get">
+            <input type="text" id="pesquisa" name="q" placeholder="Busque sua Playlist" required>
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+    <img src="/static/imagens/Boiadeira.jpg" class="imagem">
+    <div class="descricao">
+        <h2>BOIADEIRA</h2>
+        <p class="artista">ANA CASTELO</p>
+    </div>
+    <div class="duracao">
+        <div class="barra">
+            <progress value="0" max="1"></progress>
+            <div class="ponto"></div>
+        </div>
+        <div class="tempo">
+            <p class="inicio">0:00
+
+            <p class="fim">2:49</p>
+        </div>
+    </div>
+    <div class="player">
+        <i class="fas fa-step-backward setas anterior"></i>
+        <i class="fas fa-play-circle botao-play"></i>
+        <i class="fas fa-pause-circle botao-pause"></i>
+        <i class="fas fa-step-forward setas proxima"></i>
+    </div>
+    <audio src="/static/musicas/Boiadeira.mp3"></audio>
+    <script src="/static/js/dados.js"></script>
+</body>
+</html>
