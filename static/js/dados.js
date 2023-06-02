@@ -41,7 +41,7 @@ fetch('../music')
 
         document.querySelector('.proxima').addEventListener('click', () => {
             indexMusica++;
-            if (indexMusica > 25) {
+            if (indexMusica > 2) {
                 indexMusica = 0;
             }
             renderizarMusica(indexMusica);
@@ -124,7 +124,7 @@ document.querySelector('i.anterior').addEventListener('click', () => {
 
 document.querySelector('.proxima').addEventListener('click', () => {
     indexMusica++;
-    if (indexMusica > 25) {
+    if (indexMusica > 2) {
         indexMusica = 0;
     }
     renderizarMusica(indexMusica);
