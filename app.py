@@ -1,5 +1,12 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from pytube import YouTube
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import time
 import os
 import moviepy.editor as mp
 import re
@@ -50,7 +57,7 @@ def download_video(link, link_img, nome, nome_artista, nome_musica):
                 new_file = mp.AudioFileClip(mp4_path)
           
                 new_file.write_audiofile(mp3_path)
-                     
+                
                 os.remove(mp4_path)
               
         
@@ -64,16 +71,18 @@ def download_video(link, link_img, nome, nome_artista, nome_musica):
 
         return lista
 
-@app.route('/music', methods=['GET'])
-def get_musicas():
+@app.route('/music/<yt_id>', methods=['GET'])
+def get_musicas(yt_id):
+        print('tamo on',yt_id)
         music = []
-        youTubeApiKey='SUA API KEY'
+        youTubeApiKey='AIzaSyCH8bkP6xRQDn0f24XkAwbZtW8FOMXp8Lw'
 
         youtube=build('youtube','v3',developerKey=youTubeApiKey)
 
         #extraindo musicas de uma playlist
         #https://music.youtube.com/playlist?list=LpWNlrG9ev8
-        playlistId= 'RDCLAK5uy_lW5Ba7hNPuQjGabDvy4cUZgj-FeONdfsM'
+        #playlistId= 'RDCLAK5uy_lW5Ba7hNPuQjGabDvy4cUZgj-FeONdfsM'
+        playlistId= yt_id
         #playlistName = 'Boiadera'
         nextPage_token = None
 
@@ -125,8 +134,94 @@ def get_musicas():
             print(img,'-',caminho_img)
             music.append(musica_info)
         #print(music)
-        return jsonify(music)
+        return music
 
+@app.route('/home')
+def get_new():
+    return render_template('new.html')
+
+
+@app.route('/loading', methods=['POST'])
+def get_loading():
+    name = request.form['dados']
+    print(name)
+    chrome_options = Options()
+    chrome_options.add_argument("--headless=new")  # Executa em modo headless
+    #chrome_options.add_argument("--no-sandbox")  
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.get('https://music.youtube.com/')
+    search_button = driver.find_element("xpath",'//*[@id="layout"]/ytmusic-nav-bar/div[2]/ytmusic-search-box/div/div[1]/tp-yt-paper-icon-button[1]')
+    search_button.click()
+    search_box = WebDriverWait(driver, 30).until(
+    EC.visibility_of_element_located((By.XPATH, '/html/body/ytmusic-app/ytmusic-app-layout/ytmusic-nav-bar/div[2]/ytmusic-search-box/div/div[1]/input'))
+    )
+    #search_box = driver.find_element("xpath",'//*[@id="input"]')
+    #driver.implicitly_wait(10)
+    search_box.send_keys(name)
+    search_box.send_keys(Keys.ENTER)
+    #driver.implicitly_wait(30)
+    time.sleep(5)
+    search_playlist = WebDriverWait(driver, 30).until(
+    EC.visibility_of_element_located((By.XPATH, '/html/body/ytmusic-app/ytmusic-app-layout/div[4]/ytmusic-search-page/ytmusic-tabbed-search-results-renderer/div[2]/ytmusic-section-list-renderer/div[1]/ytmusic-chip-cloud-renderer/iron-selector/ytmusic-chip-cloud-chip-renderer[4]/div/a'))
+    )
+    #search_playlist = driver.find_element("xpath",'')
+    search_playlist.click()
+    time.sleep(5)
+    search_first_playlist = WebDriverWait(driver, 30).until(
+    EC.visibility_of_element_located((By.XPATH, '/html/body/ytmusic-app/ytmusic-app-layout/div[4]/ytmusic-search-page/ytmusic-tabbed-search-results-renderer/div[2]/ytmusic-section-list-renderer/div[2]/ytmusic-shelf-renderer/div[3]/ytmusic-responsive-list-item-renderer/a'))
+    )
+    #search_first_playlist = driver.find_element("xpath",'')
+    
+    search_first_playlist.click()
+    time.sleep(5)
+    get_url = driver.current_url
+    print(get_url)
+    #https://music.youtube.com/playlist?list=RDCLAK5uy_lW5Ba7hNPuQjGabDvy4cUZgj-FeONdfsM
+    url_id = get_url.split('list=')
+    print(url_id[1])
+    driver.quit()
+    return render_template('new.html', dados=url_id[1])
+
+
+def get_search_yt(name):
+    print(name)
+    chrome_options = Options()
+    chrome_options.add_argument("--headless=new")  # Executa em modo headless
+    #chrome_options.add_argument("--no-sandbox")  
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.get('https://music.youtube.com/')
+    search_button = driver.find_element("xpath",'//*[@id="layout"]/ytmusic-nav-bar/div[2]/ytmusic-search-box/div/div[1]/tp-yt-paper-icon-button[1]')
+    search_button.click()
+    search_box = WebDriverWait(driver, 30).until(
+    EC.visibility_of_element_located((By.XPATH, '/html/body/ytmusic-app/ytmusic-app-layout/ytmusic-nav-bar/div[2]/ytmusic-search-box/div/div[1]/input'))
+    )
+    #search_box = driver.find_element("xpath",'//*[@id="input"]')
+    #driver.implicitly_wait(10)
+    search_box.send_keys(name)
+    search_box.send_keys(Keys.ENTER)
+    #driver.implicitly_wait(30)
+    time.sleep(5)
+    search_playlist = WebDriverWait(driver, 30).until(
+    EC.visibility_of_element_located((By.XPATH, '/html/body/ytmusic-app/ytmusic-app-layout/div[4]/ytmusic-search-page/ytmusic-tabbed-search-results-renderer/div[2]/ytmusic-section-list-renderer/div[1]/ytmusic-chip-cloud-renderer/iron-selector/ytmusic-chip-cloud-chip-renderer[4]/div/a'))
+    )
+    #search_playlist = driver.find_element("xpath",'')
+    search_playlist.click()
+    time.sleep(5)
+    search_first_playlist = WebDriverWait(driver, 30).until(
+    EC.visibility_of_element_located((By.XPATH, '/html/body/ytmusic-app/ytmusic-app-layout/div[4]/ytmusic-search-page/ytmusic-tabbed-search-results-renderer/div[2]/ytmusic-section-list-renderer/div[2]/ytmusic-shelf-renderer/div[3]/ytmusic-responsive-list-item-renderer/a'))
+    )
+    #search_first_playlist = driver.find_element("xpath",'')
+    
+    search_first_playlist.click()
+    time.sleep(5)
+    get_url = driver.current_url
+    print(get_url)
+    #https://music.youtube.com/playlist?list=RDCLAK5uy_lW5Ba7hNPuQjGabDvy4cUZgj-FeONdfsM
+    url_id = get_url.split('list=')
+    print(url_id[1])
+    driver.quit()
+    #get_musicas()
+    return jsonify(get_musicas(url_id[1]))
 
 @app.route('/')
 def index():
@@ -136,4 +231,5 @@ def index():
 
 
 if __name__ == '__main__':
+    #get_search_yt('hungria')
     app.run()
