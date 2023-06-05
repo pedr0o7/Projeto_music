@@ -1,19 +1,11 @@
 
-//Implementar btn para rodar esse fetch, ativa a tela de carregamento e ao finalizar renderiza a tela padrão 
-//novamente com os dados atuais!!!
 fetch('../music')
     .then(result => {
-        // Manipule os dados JSON recebidos aqui
-        // Por exemplo, exiba os valores em algum elemento HTML
         return result.json();
     })
     .then(data => {
         const dados = data;
         console.log(dados);
-        //document.getElementById('titulo').textContent = dados.titulo;
-        //document.getElementById('artista').textContent = dados.artista;
-        //document.getElementById('link').textContent = dados.src;
-        //document.getElementById('link_img').textContent = dados.img;
         let musica = document.querySelector('audio');
         let indexMusica = 0;
 
@@ -24,7 +16,6 @@ fetch('../music')
 
         renderizarMusica(indexMusica);
 
-        // Eventos
         document.querySelector('i.botao-play').addEventListener('click', tocarMusica);
 
         document.querySelector('i.botao-pause').addEventListener('click', pausarMusica);
@@ -47,7 +38,6 @@ fetch('../music')
             renderizarMusica(indexMusica);
         });
 
-        // Funções
         function renderizarMusica(index) {
             musica.setAttribute('src', data[index].src);
             musica.addEventListener('loadeddata', () => {
@@ -107,7 +97,6 @@ let nomeArtista = document.querySelector('.descricao i');
 
 renderizarMusica(indexMusica);
 
-// Eventos
 document.querySelector('i.botao-play').addEventListener('click', tocarMusica);
 
 document.querySelector('i.botao-pause').addEventListener('click', pausarMusica);
@@ -130,7 +119,6 @@ document.querySelector('.proxima').addEventListener('click', () => {
     renderizarMusica(indexMusica);
 });
 
-// Funções
 function renderizarMusica(index) {
     musica.setAttribute('src', musicas[index].src);
     musica.addEventListener('loadeddata', () => {
