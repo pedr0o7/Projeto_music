@@ -15,7 +15,16 @@ import urllib.request
 from googleapiclient.discovery import build
 
 app = Flask(__name__)
-
+# download_video Serve para baixar a imagem e o musica e retornar 
+# uma dicionario com os dados das musicas salvas
+# passa como parametro o link da musica, o link da img o nome da img
+# o nome do artista e o nome da musica
+#funções do python necessarias para a execução do download dos dados:
+#import os
+#import moviepy.editor as mp
+#import re
+#import sys
+#import urllib.request
 def download_video(link, link_img, nome, nome_artista, nome_musica):
     with app.app_context():
         try:
@@ -55,7 +64,10 @@ def download_video(link, link_img, nome, nome_artista, nome_musica):
         lista['img'] = nome
 
         return lista
-
+# app.route e a rota do html, nesse caso ele recebe como parametro o hash
+# do linck do yt, com isso ele chama a função download_video passando todos
+# os parametros necessarios, os quais são pegos por meio da API do yt e do google
+# from pytube import YouTube e a do from googleapiclient.discovery import build
 @app.route('/music/<yt_id>', methods=['GET'])
 def get_musicas(yt_id):
         print('tamo on',yt_id)
@@ -108,11 +120,21 @@ def get_musicas(yt_id):
             music.append(musica_info)
     
         return jsonify(music)
-
+# app.route e a rota do html que vai direcionar para a tela de home por meio 
+# do render_template
 @app.route('/home')
 def get_new():
     return render_template('new.html')
-
+# app.route e a rota do html que vai direcionar para a tela de loading
+# a qual recebe dados da pesquisa do usuario e por meio do selenium
+# from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
+# para realizar a consulta no youtube e retornar a url da pesquisa
+# a função time import time serve para evitar erros de carregamento do selenium
 @app.route('/loading', methods=['POST'])
 def get_loading():
     name = request.form['dados']
@@ -152,11 +174,13 @@ def get_loading():
     print(url_id[1])
     driver.quit()
     return render_template('new.html', dados=url_id[1])
-
+# app.route e a rota do html que vai direcionar para a tela de Inicial por meio 
+# do render_template 
 @app.route('/')
 def index():
     return render_template('teste.html')
 
 
 if __name__ == '__main__':
+    # Inicia o Flask
     app.run()

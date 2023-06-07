@@ -1,3 +1,4 @@
 pip install --upgrade google-api-python-client
 pip install pafy
 pip install flask
+pip install selenium
